@@ -6,6 +6,7 @@ using TMPro;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Player2D : MonoBehaviour
 {
+    public ParticleSystem dust;
     public float movementSpeed = 10f;
     float movement = 0f;
     public TextMeshProUGUI countText;
@@ -53,9 +54,10 @@ public class Player2D : MonoBehaviour
         if (collision.gameObject.CompareTag("Coin"))
         {
             Destroy(collision.gameObject);
-            coinCount = coinCount + 10;
+            coinCount = coinCount + 30;
             SetCountText();
             Debug.Log(coinCount);
+            
         }
     }
     private void UpdateCharacter(int selectedOption)
@@ -67,5 +69,10 @@ public class Player2D : MonoBehaviour
     private void Load()
     {
         selectedOption = PlayerPrefs.GetInt("selectedOption");
+    }
+
+    public void CreateDust()
+    {
+        dust.Play();
     }
 }

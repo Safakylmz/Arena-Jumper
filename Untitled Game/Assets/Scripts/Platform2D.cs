@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class Platform2D : MonoBehaviour
 {
-    public float jumpForce = 10f;
+    
+    public float jumpForce = 15f;
 
+    public void Start()
+    {
+        
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.relativeVelocity.y <= 0f)
@@ -17,6 +22,8 @@ public class Platform2D : MonoBehaviour
                 Vector2 velocity = rb.velocity;
                 velocity.y = jumpForce;
                 rb.velocity = velocity;
+
+                FindObjectOfType<Player2D>().CreateDust();
             }
         }
         
