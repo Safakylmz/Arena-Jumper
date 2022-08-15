@@ -7,6 +7,7 @@ public class Platform2D : MonoBehaviour
     
     public float jumpForce = 15f;
 
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.relativeVelocity.y <= 0f)
@@ -21,7 +22,7 @@ public class Platform2D : MonoBehaviour
                 FindObjectOfType<Player2D>().CreateDust();
             }
         }
-        
     }
+
 }
 

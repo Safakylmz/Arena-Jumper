@@ -9,6 +9,7 @@ public class Player2D : MonoBehaviour
     [Header("Particle Effects")]
     public ParticleSystem jumpingParticle;
     public ParticleSystem jetpackParticle;
+    public ParticleSystem bloodParticle;
 
     [Header("Left or Right movement speed")]
     public float movementSpeed = 10f;
@@ -31,10 +32,11 @@ public class Player2D : MonoBehaviour
     
     
     [Header("Jetpack Options")]
-    public float secondsToApplyForce = 3;
+    public float secondsToApplyForce = 5;
     private bool addingForce;
-    public float jetpackPower = 1000;
+    public float jetpackPower = 40;
     private float timeCount;
+    [SerializeField] private float customDrag;
 
 
     private int selectedOption = 0;  //karakter seçme ekraný seçilen karakter 0.
@@ -59,29 +61,32 @@ public class Player2D : MonoBehaviour
     {
         movement = Input.GetAxis("Horizontal") * movementSpeed;
 
-        if (addingForce)
-        {
-            timeCount += Time.deltaTime;
-
-            if(timeCount < secondsToApplyForce)
-            {
-                rb.AddForce(Vector2.up * jetpackPower, ForceMode2D.Force);
-                jetpackParticle.Play();
-            }
-            else
-            {
-                timeCount = 0;
-                addingForce = false;
-                jetpackParticle.Stop();
-            }
-        }
     }
     private void FixedUpdate()
     {
         Vector2 velocity = rb.velocity;
         velocity.x = movement;
         rb.velocity = velocity;
-        
+
+
+        if (addingForce)
+        {
+            timeCount += Time.deltaTime;
+
+            if (timeCount < secondsToApplyForce)
+            {
+                rb.AddForce(Vector2.up * jetpackPower, ForceMode2D.Force);
+                rb.drag = customDrag;
+                jetpackParticle.Play();
+            }
+            else
+            {
+                timeCount = 0;
+                addingForce = false;
+                rb.drag = 0;
+                jetpackParticle.Stop();
+            }
+        }
     }
     void SetCountText()
     {
@@ -95,7 +100,6 @@ public class Player2D : MonoBehaviour
             Destroy(collision.gameObject);
             coinCount = coinCount + 30;
             SetCountText();
-            Debug.Log(coinCount);
             
         }
 
@@ -104,16 +108,24 @@ public class Player2D : MonoBehaviour
 
             Destroy(collision.gameObject);
             addingForce = true;
+            rb.velocity = Vector2.up;
+
 
         }
 
         if (collision.CompareTag("Left"))
         {
-            this.transform.position = new Vector3(rightObj.gameObject.transform.position.x - 2, this.transform.position.y, this.transform.position.z);
+            this.transform.position = new Vector3(rightObj.transform.position.x - 2, this.transform.position.y, this.transform.position.z);
         }
         if (collision.CompareTag("Right"))
         {
-            this.transform.position = new Vector3(leftObj.gameObject.transform.position.x + 2, this.transform.position.y, this.transform.position.z);
+            this.transform.position = new Vector3(leftObj.transform.position.x + 2, this.transform.position.y, this.transform.position.z);
+        }
+
+        if (collision.CompareTag("Collider"))
+        {
+            GameManager2D.isGameOver = true;
+            gameObject.SetActive(false);
         }
     }
     private void UpdateCharacter(int selectedOption)
@@ -130,6 +142,11 @@ public class Player2D : MonoBehaviour
     public void CreateDust()
     {
         jumpingParticle.Play();
+    }
+
+    public void CreateBlood()
+    {
+        bloodParticle.Play();
     }
 
     /*
