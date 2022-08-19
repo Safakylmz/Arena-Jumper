@@ -14488,7 +14488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startPos: {x: 0, y: 0}
-  pixelDistToDetect: 1
+  pixelDistToDetect: 2
   speed: 0.45
 --- !u!4 &1936263526 stripped
 Transform:
